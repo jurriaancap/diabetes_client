@@ -1,0 +1,68 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Environment variable files
+.env
+*.env
+
+# Testing & coverage
+.coverage
+.tox/
+.nox/
+.pytest_cache/
+htmlcov/
+
+# MyPy, Pylint, Flake8, etc.
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+.pylint.d/
+
+# VSCode and other editors
+.vscode/
+.idea/
+*.swp
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+*.spec
+
+# Logs and runtime files
+*.log
+*.pid
+*.db
+*.sqlite3
+
+# FastAPI specific (if you use Uvicorn/Pydantic cache)
+*.msgpack
+*.schema.json
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# macOS/Linux/Windows system files
+.DS_Store
+Thumbs.db
+
+#exclude the poc 
+poc/
