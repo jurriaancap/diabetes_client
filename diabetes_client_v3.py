@@ -85,6 +85,19 @@ class ApiClient:
             return None, str(e)
 
     @staticmethod
+    def delete_record(access_token, record_datetime_utc):
+        """delete a glucose record for the logged-in user"""
+        url = f"{BACKEND_URL}/records/{record_datetime_utc}"
+        headers = {"Authorization": f"Bearer {access_token}"}
+
+        try:
+            response = requests.delete(url, headers=headers)
+            response.raise_for_status()
+            return response.json(), None
+        except requests.exceptions.RequestException as e:
+            return None, str(e)
+
+    @staticmethod
     def refresh_access_token(refresh_token):
         """Refresh the access token using the refresh token"""
         url = f"{BACKEND_URL}/refresh_token"
@@ -366,13 +379,61 @@ class DiabetesTrackerUI:
         fig.add_hline(y=12, line_dash="dash", line_color="red", annotation_text="High")
         st.plotly_chart(fig)
 
-        # Display data
+    # Display data with selection column
         st.subheader("Records")
+        
+        # Add selection column to dataframe for deletion
+        if "selected_records" not in st.session_state:
+            st.session_state.selected_records = []
+        
+        # Create a copy for display with a select column
+        display_df = df.copy().sort_values(by="timestamp", ascending=False)
+        
+        # Create multiselect for choosing records to delete
+        selected_indices = st.multiselect(
+            "Select records to delete:",
+            options=list(range(len(display_df))),
+            format_func=lambda i: f"Record {i+1}: {display_df.iloc[i]['timestamp'].strftime('%Y-%m-%d %H:%M')} - {display_df.iloc[i]['glucose']} mmol/L"
+        )
+
+        # Display data
+        st.subheader("Records2")
         st.dataframe(
             df.drop(columns=["datetime", "short_notes"]).sort_values(
                 by="timestamp", ascending=False
             )
         )
+
+        # Delete button
+        if selected_indices and st.button(
+            "Delete Selected Records", type="primary", key="delete_records"
+        ):
+            access_token = st.session_state.access_token
+            success_count = 0
+            error_messages = []
+
+            with st.spinner("Deleting selected records..."):
+                for idx in selected_indices:
+                    # Get the UTC datetime string of the record to delete
+                    record_datetime_utc = display_df.iloc[idx]["datetime"]
+
+                    # Call the delete API
+                    result, error = ApiClient.delete_record(
+                        access_token, record_datetime_utc
+                    )
+
+                    if error:
+                        error_messages.append(f"Failed to delete record {idx + 1}: {error}")
+                    else:
+                        success_count += 1
+
+            if success_count > 0:
+                st.success(f"Successfully deleted {success_count} record(s)")
+                st.rerun()  # Refresh to show updated data
+
+            if error_messages:
+                for msg in error_messages:
+                    st.error(msg)
 
         # Show record status
         if failed_records >= 1:
