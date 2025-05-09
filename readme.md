@@ -1,5 +1,7 @@
 # Diabetes Tracker Frontend
 
+This is a POC front end gui to my backend. i am not a proffessional programmer and this is my first python project. please be gentle ;)
+
 The **Diabetes Tracker Frontend** is a Streamlit-based application that provides an intuitive user interface for managing user accounts, tracking glucose records, and visualizing data. It interacts with the backend API to perform operations such as user authentication, adding records, and retrieving glucose data.
 
 ---
