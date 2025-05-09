@@ -6,9 +6,15 @@ import pytz
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+import os
+from dotenv import load_dotenv
+
 
 # Configuration
-BACKEND_URL = "https://diabetes-tracker-swqt.onrender.com"  # Update this to the actual backend URL if deployed
+load_dotenv()
+
+
+BACKEND_URL = os.getenv("BACKEND_URL")
 
 
 # ---- Helper Functions ----
