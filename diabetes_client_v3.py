@@ -224,7 +224,9 @@ class DiabetesTrackerUI:
             if st.button("Login", key="login"):
                 response, error = ApiClient.login_user(email, password)
                 if error:
-                    st.toast(f"{error}", icon="❌")
+                    # Use the error message directly if response is None
+                    error_message = response.get("detail") if response else error
+                    st.toast(f"Unable to login the user {email}", icon="❌")
                 else:
                     # Store session details
                     st.session_state.logged_in = True
@@ -250,18 +252,24 @@ class DiabetesTrackerUI:
             st.subheader("🗑️ Delete user")
             email = st.text_input("Email", key="login_email")
             password = st.text_input("Password", type="password", key="login_pwd")
+            confirm_delete = st.checkbox("I confirm that I want to delete my account")
+            delete_button_disabled = not confirm_delete
 
-            if st.button("delete user", key="delete_user"):
-                response, error = ApiClient.delete_user(email, password)
-                if error:
-                    st.error(f"{error}", icon="❌")
+
+            if st.button("delete user", key="delete_user",disabled=delete_button_disabled):
+                if not email or not password:
+                    st.error("Email and password are required.")
                 else:
-                    # Store session details
-                    st.session_state.logged_in = False
-                    st.session_state.email = None
-                    st.session_state.access_token = None
-                    st.session_state.refresh_token = None
-                    st.success(f"{response}", icon="✅")
+                    response, error = ApiClient.delete_user(email, password)
+                    if error:
+                        st.error(f"{error}", icon="❌")
+                    else:
+                        #clear session state 
+                        st.session_state.logged_in = False
+                        st.session_state.email = None
+                        st.session_state.access_token = None
+                        st.session_state.refresh_token = None
+                        st.success(f"{response.get("message")}", icon="✅")
 
 
     def render_signup_page(self):
