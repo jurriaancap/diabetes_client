@@ -261,7 +261,7 @@ class DiabetesTrackerUI:
             st.subheader("🗑️ Delete user")
             email = st.text_input("Email", key="login_email")
             password = st.text_input("Password", type="password", key="login_pwd")
-            confirm_delete = st.checkbox("I confirm that I want to delete my account")
+            confirm_delete = st.checkbox("I confirm that I want to delete my account, i understand that all my personal recoreds and user information will be lost forever !")
             delete_button_disabled = not confirm_delete
 
 
