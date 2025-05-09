@@ -55,6 +55,19 @@ class ApiClient:
             return None, str(e)
 
     @staticmethod
+    def delete_user(email, password):
+        """delete user using the password and login name s"""
+        url = f"{BACKEND_URL}/users/"
+        payload = {"email": email, "password": password}
+        try:
+            response = requests.delete(url, json=payload)
+            response.raise_for_status()
+            return response.json(), None
+        except requests.exceptions.RequestException as e:
+            return None, str(e)
+
+
+    @staticmethod
     def get_records(access_token):
         """Retrieve all glucose records for the logged-in user"""
         url = f"{BACKEND_URL}/records/"
@@ -169,6 +182,7 @@ class DiabetesTrackerUI:
         if st.session_state.get("logged_in", False):
             nav_button("Show Records", "Show Records")
             nav_button("Add Record", "Add Record")
+            nav_button("Delete User", "Delete User")
             cols = nav.columns(1)
             if cols[0].button("Logout", use_container_width=True):
                 st.session_state.logged_in = False
@@ -192,7 +206,8 @@ class DiabetesTrackerUI:
                 data = self.fetch_records()
                 if data:
                     self.process_records(data)
-
+        elif st.session_state.page == "Delete User":
+            self.render_delete_user_page()
         # Token management
         if st.session_state.get("logged_in", False):
             self.manage_token_and_fetch_data()
@@ -228,6 +243,26 @@ class DiabetesTrackerUI:
             st.write(f"Logged in as: {st.session_state.email}")
             if st.button("Logout",key="logout"):
                 self.logout_user()
+
+    def render_delete_user_page(self):
+        """Render the delete user page """
+        if st.session_state.logged_in:
+            st.subheader("🗑️ Delete user")
+            email = st.text_input("Email", key="login_email")
+            password = st.text_input("Password", type="password", key="login_pwd")
+
+            if st.button("delete user", key="delete_user"):
+                response, error = ApiClient.delete_user(email, password)
+                if error:
+                    st.error(f"{error}", icon="❌")
+                else:
+                    # Store session details
+                    st.session_state.logged_in = False
+                    st.session_state.email = None
+                    st.session_state.access_token = None
+                    st.session_state.refresh_token = None
+                    st.success(f"{response}", icon="✅")
+
 
     def render_signup_page(self):
         """Render the signup page"""
