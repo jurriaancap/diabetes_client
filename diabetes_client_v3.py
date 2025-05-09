@@ -140,13 +140,14 @@ class ApiClient:
             response.raise_for_status()
             return response.json(), None
         except requests.exceptions.HTTPError as e:
-            # Return the response JSON if available
+            # Extract error details from the response if available
             if e.response is not None:
                 try:
-                    return e.response.json(), None
+                    error_detail = e.response.json().get("detail", "An error occurred.")
+                    return None, error_detail
                 except ValueError:
                     # If the response is not JSON, return the raw text
-                    return {"detail": [{"msg": e.response.text}]}, None
+                    return None, e.response.text
             return None, str(e)
         except requests.exceptions.RequestException as e:
             return None, str(e)
@@ -327,13 +328,10 @@ class DiabetesTrackerUI:
                     response, error = ApiClient.signup_user(
                         email, password, user_timezone, user_tags
                     )
-                if error:
-                    st.error(f"Signup failed: {error}")
-                elif response and "detail" in response:
-                        # Extract and display error messages from the response
-                        for error_detail in response["detail"]:
-                            st.error(f"{error_detail.get('msg', 'An error occurred.')}")
-                else:
+                    if error:
+                        # Display the error message from the API
+                        st.error(f"Signup failed: {error}")
+                    else:
                         # Only navigate to the login page if signup is successful
                         st.success("Account created successfully! Redirecting to login...")
                         st.session_state.page = "Login"
