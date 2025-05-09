@@ -6,15 +6,11 @@ import pytz
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-import os
-from dotenv import load_dotenv
-
 
 # Configuration
-load_dotenv()
 
 
-BACKEND_URL = os.getenv("BACKEND_URL")
+BACKEND_URL = st.secrets["BACKEND_URL"]
 
 
 # ---- Helper Functions ----
