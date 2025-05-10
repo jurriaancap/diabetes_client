@@ -284,6 +284,7 @@ class DiabetesTrackerUI:
     def render_signup_page(self):
         """Render the signup page"""
         st.header("Create a New Account")
+        st.subheader("this a Alpha POC , only selected emails can sign up !!!")
 
         if st.session_state.logged_in:
             self.logout_user()
