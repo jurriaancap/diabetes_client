@@ -1,0 +1,7 @@
+[project]
+name = "diabetes-client"
+version = "0.1.0"
+description = "a diabetes tracker frontend application, rquires a backend app"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
