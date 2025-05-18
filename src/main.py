@@ -239,11 +239,11 @@ class DiabetesTrackerUI:
             try:
                 resp = requests.get(docs_url, timeout=2)
                 if resp.status_code == 200 and "Swagger UI" in resp.text:
-                    st.success(f"Backend : {BACKEND_URL} is online", icon="🟢")
+                    st.success(f"Backend is online", icon="🟢")
                 else:
-                    st.error(f"Backend : {BACKEND_URL} is NOT YET  online, this can take up to 60 seconds", icon="🔴")
+                    st.error(f"Backend  is NOT YET  online, this can take up to 60 seconds", icon="🔴")
             except Exception:
-                st.error(f"Backend : {BACKEND_URL} is NOT YET  online, this can take up to 60 seconds", icon="🔴")
+                st.error(f"Backend is NOT YET  online, this can take up to 60 seconds", icon="🔴")
                 
 
             if st.button("Login", key="login"):
