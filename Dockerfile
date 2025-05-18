@@ -47,4 +47,4 @@ COPY . .
 EXPOSE 8501
 
 # Run the Streamlit app
-CMD ["streamlit", "run", "diabetes_client_v3.py", "--server.port=8501", "--server.enableCORS=false", "--server.enableXsrfProtection=false"]
+CMD ["streamlit", "run", "src/main.py", "--server.port=8501", "--server.enableCORS=false", "--server.enableXsrfProtection=false"]
