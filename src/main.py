@@ -416,33 +416,6 @@ class DiabetesTrackerUI:
         if not filtered:
             st.info("No valid records to display.")
             return
-        st.sidebar.subheader("Graphic settings")
-        line_options = {
-            "Straight": "linear", 
-            "Smooth": "spline",
-            "steo vertical": "hv",
-            "step vertical-horizontal": "vh",
-            "Rounded": "spline",  # Met later aangepaste smoothing
-        }
-        
-        selected_line_type = st.selectbox(
-            "Select the line type",
-            options=list(line_options.keys()),
-            index=0
-        )
-        
-        # Haal de plotly line_shape op
-        line_shape = line_options[selected_line_type]
-        # Extra smoothing opties voor splines
-        smoothing = 0.0
-        if selected_line_type == "Smooth":
-            smoothing = 0.8
-            st.info("Vloeiende lijnen tonen de trend maar kunnen details afvlakken.")
-        elif selected_line_type == "Rounded":
-            smoothing = 0.3
-
-        show_zones = st.checkbox("Show upper , best and lower limits", value=True)
-    
 
         df = pd.DataFrame(filtered)
 
@@ -470,19 +443,11 @@ class DiabetesTrackerUI:
             markers=True,
             labels={"timestamp": "Time", "glucose": "Glucose (mmol/L)"},
             hover_data={"tags": True, "short_notes": True},
-            line_shape=line_shape,
+            line_shape="linear",
+
         )
-        if selected_line_type in ["Smooth", "Rounded"]:
-            fig.update_traces(line=dict(shape=line_shape, smoothing=smoothing))
-    
-        # fig.add_hline(y=5, line_dash="dash", line_color="orange", annotation_text="Low")
-        # fig.add_hline(y=12, line_dash="dash", line_color="red", annotation_text="High")
-
-        if show_zones:
-            fig.add_hrect(y0=0, y1=2, fillcolor="orange", opacity=0.1, line_width=0)
-            fig.add_hrect(y0=5, y1=7, fillcolor="green", opacity=0.1, line_width=0)
-            fig.add_hrect(y0=12, y1=12, fillcolor="red", opacity=0.1, line_widht=0)
-
+        fig.add_hline(y=5, line_dash="dash", line_color="orange", annotation_text="Low")
+        fig.add_hline(y=12, line_dash="dash", line_color="red", annotation_text="High")
         st.plotly_chart(fig)
 
     # Display data with selection column
