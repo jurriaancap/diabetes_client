@@ -443,7 +443,8 @@ class DiabetesTrackerUI:
             markers=True,
             labels={"timestamp": "Time", "glucose": "Glucose (mmol/L)"},
             hover_data={"tags": True, "short_notes": True},
-            line_shape="linear",
+            # line_shape="linear",
+            line_shape="spline",
         )
         fig.add_hline(y=5, line_dash="dash", line_color="orange", annotation_text="Low")
         fig.add_hline(y=12, line_dash="dash", line_color="red", annotation_text="High")
