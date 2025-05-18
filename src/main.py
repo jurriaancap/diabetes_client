@@ -483,11 +483,52 @@ class DiabetesTrackerUI:
         fig.add_hline(y=5, line_dash="dash", line_color="orange", annotation_text="Low")
         fig.add_hline(y=12, line_dash="dash", line_color="red", annotation_text="High")
         
-        # Add colored zones if selected
+        # Add colored zones safely using add_shape instead of add_hrect if selected
         if show_zones:
-            fig.add_hrect(y0=0, y1=5, fillcolor="orange", opacity=0.1, line_width=0)
-            fig.add_hrect(y0=5, y1=12, fillcolor="green", opacity=0.1, line_width=0)
-            fig.add_hrect(y0=12, y1=20, fillcolor="red", opacity=0.1, line_width=0)
+            # Low zone (orange)
+            fig.add_shape(
+                type="rect",
+                xref="paper",
+                yref="y",
+                x0=0,
+                x1=1,
+                y0=0,
+                y1=5,
+                fillcolor="orange",
+                opacity=0.1,
+                layer="below",
+                line_width=0,
+            )
+            
+            # Target zone (green)
+            fig.add_shape(
+                type="rect",
+                xref="paper",
+                yref="y",
+                x0=0,
+                x1=1,
+                y0=5,
+                y1=12,
+                fillcolor="green",
+                opacity=0.1,
+                layer="below",
+                line_width=0,
+            )
+            
+            # High zone (red)
+            fig.add_shape(
+                type="rect",
+                xref="paper",
+                yref="y",
+                x0=0,
+                x1=1,
+                y0=12,
+                y1=25,
+                fillcolor="red",
+                opacity=0.1,
+                layer="below",
+                line_width=0,
+            )
         
         # Improve hover and layout
         fig.update_layout(
@@ -516,7 +557,6 @@ class DiabetesTrackerUI:
         )
 
         # Display data
-        st.subheader("Records")
         st.dataframe(
             df.drop(columns=["datetime", "short_notes"]).sort_values(
                 by="timestamp", ascending=False
