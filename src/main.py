@@ -45,6 +45,8 @@ class ApiClient:
     @staticmethod
     def login_user(email, password):
         """Log in user and retrieve authentication tokens"""
+
+
         url = f"{BACKEND_URL}/login/"
         payload = {"email": email, "password": password}
         try:
@@ -231,8 +233,22 @@ class DiabetesTrackerUI:
                 "Password", type="password", key="login_pwd"
             )
 
+            # --- Backend health check ---
+            
+            docs_url = f"{BACKEND_URL}/docs"
+            try:
+                resp = requests.get(docs_url, timeout=2)
+                if resp.status_code == 200 and "Swagger UI" in resp.text:
+                    st.success(f"Backend : {BACKEND_URL} is online", icon="🟢")
+                else:
+                    st.error(f"Backend : {BACKEND_URL} is NOT YET  online, this can take up to 60 seconds", icon="🔴")
+            except Exception:
+                st.error(f"Backend : {BACKEND_URL} is NOT YET  online, this can take up to 60 seconds", icon="🔴")
+                
+
             if st.button("Login", key="login"):
                 response, error = ApiClient.login_user(email, password)
+
                 if error:
                     # Use the error message directly if response is None
                     error_message = response.get("detail") if response else error
@@ -492,7 +508,7 @@ class DiabetesTrackerUI:
         # Show record status
         if failed_records >= 1:
             if total_records == failed_records:
-                st.error(f"All records failed to decode")
+                st.error("All records failed to decode")
             else:
                 st.warning(
                     f"Total records: {total_records}, Failed decryptions: {failed_records}"
