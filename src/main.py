@@ -523,7 +523,7 @@ class DiabetesTrackerUI:
                 x0=0,
                 x1=1,
                 y0=12,
-                y1=25,
+                y1=20,
                 fillcolor="red",
                 opacity=0.1,
                 layer="below",
