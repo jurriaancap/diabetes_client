@@ -439,26 +439,26 @@ class DiabetesTrackerUI:
         
         # Add dropdown for line type selection
         line_options = {
-            "Straight lines": "linear", 
             "Smooth curves": "spline",
+            "Straight lines": "linear", 
             "Step (horizontal first)": "hv",
             "Step (vertical first)": "vh",
             "Rounded corners": "spline"  # With custom smoothing
         }
         
-        # Create a horizontal layout for controls
-        col1, col2 = st.columns([2, 3])
+        # # Create a horizontal layout for controls
+        # col1, col2 = st.columns([2, 3])
         
-        with col1:
-            selected_line_type = st.selectbox(
-                "Line style:",
-                options=list(line_options.keys()),
-                index=0
-            )
+        # with col1:
+        selected_line_type = st.selectbox(
+            "Line style:",
+            options=list(line_options.keys()),
+            index=0
+        )
         
-        with col2:
-            show_zones = st.checkbox("Show target zones", value=True)
-        
+ 
+        show_zones = st.checkbox("Show target zones", value=True)
+    
         # Get the plotly line_shape
         line_shape = line_options[selected_line_type]
         
