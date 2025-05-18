@@ -436,49 +436,19 @@ class DiabetesTrackerUI:
 
         # Plot glucose levels over time
         st.subheader("📈 Blood Sugar Over Time")
-        # fig = px.line(
-        #     df,
-        #     x="timestamp",
-        #     y="glucose",
-        #     markers=True,
-        #     labels={"timestamp": "Time", "glucose": "Glucose (mmol/L)"},
-        #     hover_data={"tags": True, "short_notes": True},
-        #     line_shape="linear",
+        fig = px.line(
+            df,
+            x="timestamp",
+            y="glucose",
+            markers=True,
+            labels={"timestamp": "Time", "glucose": "Glucose (mmol/L)"},
+            hover_data={"tags": True, "short_notes": True},
+            line_shape="linear",
 
-        # )
-        # fig.add_hline(y=5, line_dash="dash", line_color="orange", annotation_text="Low")
-        # fig.add_hline(y=12, line_dash="dash", line_color="red", annotation_text="High")
-        # st.plotly_chart(fig)
-
-        # Plot glucose levels over time met vloeiende lijnen
-    st.subheader("📈 Blood Sugar Over Time")
-    fig = px.line(
-        df,
-        x="timestamp",
-        y="glucose",
-        markers=True,
-        labels={"timestamp": "Time", "glucose": "Glucose (mmol/L)"},
-        hover_data={"tags": True, "short_notes": True},
-        line_shape="spline",  # Gebruik spline voor vloeiendere lijnen
-    )
-
-    # Voeg zones toe voor verschillende bereiken
-    fig.add_hrect(y0=0, y1=5, fillcolor="orange", opacity=0.1, line_width=0, annotation_text="Low")
-    fig.add_hrect(y0=5, y1=12, fillcolor="green", opacity=0.1, line_width=0, annotation_text="Target Range")
-    fig.add_hrect(y0=12, y1=20, fillcolor="red", opacity=0.1, line_width=0, annotation_text="High")
-
-    # Referentielijnen toevoegen
-    fig.add_hline(y=5, line_dash="dash", line_color="orange", annotation_text="Low")
-    fig.add_hline(y=12, line_dash="dash", line_color="red", annotation_text="High")
-
-    # Extra aanpassingen voor een betere visualisatie
-    fig.update_layout(
-        hovermode="x unified",
-        xaxis_title="Datum en tijd",
-        yaxis_title="Glucose (mmol/L)",
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+        )
+        fig.add_hline(y=5, line_dash="dash", line_color="orange", annotation_text="Low")
+        fig.add_hline(y=12, line_dash="dash", line_color="red", annotation_text="High")
+        st.plotly_chart(fig)
 
     # Display data with selection column
         st.subheader("Records")
