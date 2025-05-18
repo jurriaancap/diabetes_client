@@ -436,6 +436,33 @@ class DiabetesTrackerUI:
 
         # Plot glucose levels over time
         st.subheader("📈 Blood Sugar Over Time")
+        
+        # Add dropdown for line type selection
+        line_options = {
+            "Straight lines": "linear", 
+            "Smooth curves": "spline",
+            "Step (horizontal first)": "hv",
+            "Step (vertical first)": "vh",
+            "Rounded corners": "spline"  # With custom smoothing
+        }
+        
+        # Create a horizontal layout for controls
+        col1, col2 = st.columns([2, 3])
+        
+        with col1:
+            selected_line_type = st.selectbox(
+                "Line style:",
+                options=list(line_options.keys()),
+                index=0
+            )
+        
+        with col2:
+            show_zones = st.checkbox("Show target zones", value=True)
+        
+        # Get the plotly line_shape
+        line_shape = line_options[selected_line_type]
+        
+        # Create the graph
         fig = px.line(
             df,
             x="timestamp",
@@ -443,14 +470,35 @@ class DiabetesTrackerUI:
             markers=True,
             labels={"timestamp": "Time", "glucose": "Glucose (mmol/L)"},
             hover_data={"tags": True, "short_notes": True},
-            line_shape="linear",
-
+            line_shape=line_shape,
         )
+        
+        # Apply smoothing for specific line types
+        if selected_line_type == "Smooth curves":
+            fig.update_traces(line=dict(shape=line_shape, smoothing=0.8))
+        elif selected_line_type == "Rounded corners":
+            fig.update_traces(line=dict(shape=line_shape, smoothing=0.3))
+        
+        # Add reference lines
         fig.add_hline(y=5, line_dash="dash", line_color="orange", annotation_text="Low")
         fig.add_hline(y=12, line_dash="dash", line_color="red", annotation_text="High")
-        st.plotly_chart(fig)
+        
+        # Add colored zones if selected
+        if show_zones:
+            fig.add_hrect(y0=0, y1=5, fillcolor="orange", opacity=0.1, line_width=0)
+            fig.add_hrect(y0=5, y1=12, fillcolor="green", opacity=0.1, line_width=0)
+            fig.add_hrect(y0=12, y1=20, fillcolor="red", opacity=0.1, line_width=0)
+        
+        # Improve hover and layout
+        fig.update_layout(
+            hovermode="x unified",
+            xaxis_title="Date and Time",
+            yaxis_title="Glucose (mmol/L)",
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
 
-    # Display data with selection column
+        # Display data with selection column
         st.subheader("Records")
         
         # Add selection column to dataframe for deletion
@@ -468,7 +516,7 @@ class DiabetesTrackerUI:
         )
 
         # Display data
-        st.subheader("Records2")
+        st.subheader("Records")
         st.dataframe(
             df.drop(columns=["datetime", "short_notes"]).sort_values(
                 by="timestamp", ascending=False
