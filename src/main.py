@@ -470,7 +470,7 @@ class DiabetesTrackerUI:
             markers=True,
             labels={"timestamp": "Time", "glucose": "Glucose (mmol/L)"},
             hover_data={"tags": True, "short_notes": True},
-            line_shape=line_shape",
+            line_shape=line_shape,
         )
         if selected_line_type in ["Smooth", "Rounded"]:
             fig.update_traces(line=dict(shape=line_shape, smoothing=smoothing))
