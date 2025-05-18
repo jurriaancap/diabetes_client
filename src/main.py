@@ -436,33 +436,19 @@ class DiabetesTrackerUI:
 
         # Plot glucose levels over time
         st.subheader("📈 Blood Sugar Over Time")
-        # fig = px.line(
-        #     df,
-        #     x="timestamp",
-        #     y="glucose",
-        #     markers=True,
-        #     labels={"timestamp": "Time", "glucose": "Glucose (mmol/L)"},
-        #     hover_data={"tags": True, "short_notes": True},
-        #     # line_shape="linear",
-        #     line_shape="spline",
-        # )
-        # fig.add_hline(y=5, line_dash="dash", line_color="orange", annotation_text="Low")
-        # fig.add_hline(y=12, line_dash="dash", line_color="red", annotation_text="High")
-        # st.plotly_chart(fig)
-
-        fig = px.bar(
+        fig = px.line(
             df,
             x="timestamp",
             y="glucose",
-  
+            markers=True,
             labels={"timestamp": "Time", "glucose": "Glucose (mmol/L)"},
             hover_data={"tags": True, "short_notes": True},
-            # line_shape="linear",
+            line_shape="linear",
+
         )
         fig.add_hline(y=5, line_dash="dash", line_color="orange", annotation_text="Low")
         fig.add_hline(y=12, line_dash="dash", line_color="red", annotation_text="High")
         st.plotly_chart(fig)
-
 
     # Display data with selection column
         st.subheader("Records")
