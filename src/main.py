@@ -127,12 +127,13 @@ class ApiClient:
             return None, str(e)
 
     @staticmethod
-    def signup_user(email, password, user_timezone, user_tags):
+    def signup_user(email, password, invitation_code, user_timezone, user_tags):
         """Register a new user"""
         url = f"{BACKEND_URL}/users/"
         payload = {
             "email": email,
             "password": password,
+            "invitation_code": invitation_code,
             "user_timezone": user_timezone,
             "user_tags": user_tags,
         }
@@ -239,7 +240,7 @@ class DiabetesTrackerUI:
             try:
                 resp = requests.get(docs_url, timeout=2)
                 if resp.status_code == 200 and "Swagger UI" in resp.text:
-                    st.success(f"Backend is online", icon="🟢")
+                    st.success(f"Backend {BACKEND_URL} is online", icon="🟢")
                 else:
                     st.error(f"Backend  is NOT YET  online, this can take up to 60 seconds", icon="🔴")
             except Exception:
@@ -300,7 +301,7 @@ class DiabetesTrackerUI:
     def render_signup_page(self):
         """Render the signup page"""
         st.header("Create a New Account")
-        st.subheader("this a Alpha POC , only selected emails can sign up !!!")
+        st.subheader("this a POC  ,without a invitation code you cannot sign up for this")
 
         if st.session_state.logged_in:
             self.logout_user()
@@ -310,6 +311,8 @@ class DiabetesTrackerUI:
             confirm_password = st.text_input(
                 "Confirm Password", type="password", key="signup_confirm_password"
             )
+            "---"
+            invitation_code = st.text_input("Invitation code", key="invitation_code")
 
             # Password strength indicator
             if password:
@@ -322,7 +325,7 @@ class DiabetesTrackerUI:
             if len(password) >= 1 and len(confirm_password) >= 1:
                 if password != confirm_password:
                     st.warning("Passwords do not match!", icon="🚫")
-
+            "---"
             # Tag selection
             default_tags = ["sober", "after breakfast", "after lunch", "after dinner"]
             user_tags = st.multiselect(
@@ -337,13 +340,13 @@ class DiabetesTrackerUI:
             )
 
             if st.button("Signup", key="signup"):
-                if not email or not password or not confirm_password:
+                if not email or not password or not confirm_password or not invitation_code:
                     st.error("All fields are required.")
                 elif password != confirm_password:
                     st.error("Passwords do not match.")
                 else:
                     response, error = ApiClient.signup_user(
-                        email, password, user_timezone, user_tags
+                        email, password, invitation_code, user_timezone, user_tags
                     )
                     if error:
                         # Display the error message from the API
